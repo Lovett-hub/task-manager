@@ -11,7 +11,7 @@ type Task struct {
 	ID          int    `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	Status      string `json:"status"` // "pending" or "completed"
+	Status      string `json:"status"` 
 }
 
 var tasks []Task
@@ -20,9 +20,9 @@ var tasks []Task
 func taskHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		if len(r.URL.Path) == len("/tasks") { // /tasks
+		if len(r.URL.Path) == len("/tasks") { 
 			getTasks(w, r)
-		} else { // /tasks/{id}
+		} else { 
 			getTaskByID(w, r)
 		}
 	case http.MethodPost:
@@ -36,7 +36,7 @@ func taskHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Create a new task
+
 func createTask(w http.ResponseWriter, r *http.Request) {
 	var task Task
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
@@ -52,15 +52,15 @@ func createTask(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(task)
 }
 
-// Get all tasks
+
 func getTasks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(tasks)
 }
 
-// Get a task by ID
+
 func getTaskByID(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Path[len("/tasks/"):] // Extract ID from URL
+	idStr := r.URL.Path[len("/tasks/"):] 
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "Invalid task ID", http.StatusBadRequest)
@@ -75,12 +75,12 @@ func getTaskByID(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	http.NotFound(w, r) // Task not found
+	http.NotFound(w, r) 
 }
 
-// Update a task
+
 func updateTask(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Path[len("/tasks/"):] // Extract ID from URL
+	idStr := r.URL.Path[len("/tasks/"):] 
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "Invalid task ID", http.StatusBadRequest)
@@ -104,12 +104,12 @@ func updateTask(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	http.NotFound(w, r) // Task not found
+	http.NotFound(w, r) 
 }
 
-// Delete a task
+
 func deleteTask(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Path[len("/tasks/"):] // Extract ID from URL
+	idStr := r.URL.Path[len("/tasks/"):] 
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "Invalid task ID", http.StatusBadRequest)
@@ -118,19 +118,19 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 
 	for i, task := range tasks {
 		if task.ID == id {
-			tasks = append(tasks[:i], tasks[i+1:]...) // Remove the task
-			w.WriteHeader(http.StatusNoContent)       // No content response
+			tasks = append(tasks[:i], tasks[i+1:]...) 
+			w.WriteHeader(http.StatusNoContent)       
 			return
 		}
 	}
 
-	http.NotFound(w, r) // Task not found
+	http.NotFound(w, r) 
 }
 
 func main() {
-	http.HandleFunc("/tasks", taskHandler)  // Handle tasks and task ID routes
-	http.HandleFunc("/tasks/", taskHandler) // Handle tasks/{id} routes
+	http.HandleFunc("/tasks", taskHandler)  
+	http.HandleFunc("/tasks/", taskHandler) 
 
 	log.Println("Starting server on :8000...")
-	log.Fatal(http.ListenAndServe(":8000", nil)) // Start server on port 8000
+	log.Fatal(http.ListenAndServe(":8000", nil)) 
 }
